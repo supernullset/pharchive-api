@@ -20,8 +20,10 @@
           (set-fields (:values m))
           (where (:by m))))
 
-(defn get-all-records [table]
-  (select table))
+(defn get-all-records [table lim off]
+  (select table
+          (limit lim)
+          (offset off)))
 
 (defn get-records-by-id [table value l]
   (first (select table

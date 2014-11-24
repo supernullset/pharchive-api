@@ -7,22 +7,37 @@
             [cheshire.core :as json]
           ))
 
-(def foo "bar")
+(defn construct-hypermedia-response [metadata data]
+  {
+   :meta metadata
+   :data data})
 
-(defresource list-collections []
+(defn api-response [meta data]
+  (json/generate-string (construct-hypermedia-response meta data)))
+
+(defresource list-collections [limit offset]
   :available-media-types ["application/json"]
   :allowed-methods [:get]
-  :handle-ok (json/generate-string (db/get-all-records :collections)))
+  :handle-ok (api-response {:limit  (Integer/parseInt limit)
+                            :offset (Integer/parseInt offset)
+                            :links  {:self "http://localhost:3000" }} (db/get-all-records :collections limit offset)) )
 
 (defresource collection [id]
   :available-media-types ["application/json"]
   :allowed-methods [:get]
-  :handle-ok (json/generate-string (db/get-collection (Integer/parseInt id))))
+  :handle-ok (json/generate-string (construct-hypermedia-response {} (db/get-collection (Integer/parseInt id)))))
 
 
 (defroutes app-routes
-  (ANY "/collections" []
-       (list-collections))
+  (ANY "/collections" [:as req]
+       ;; TODO: This is quite dirty
+       (let [params (req :params)
+             l      (params :limit)
+             o      (params :offset)
+             limit  (if l l "10")
+             offset (if o o "0")]
+         (list-collections limit offset)))
+
   (ANY "/collection/:id" [id]
        (collection id))
   (route/not-found "Not Found"))
