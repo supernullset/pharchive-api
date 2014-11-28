@@ -9,7 +9,8 @@
                  [ring/ring-defaults "0.1.2"]
                  [liberator "0.12.2"]
                  [lib-noir "0.9.4"]
-                 [cheshire "5.3.1"]]
+                 [cheshire "5.3.1"]
+                 [com.cemerick/url "0.1.1"]]
   :plugins [[lein-ring "0.8.13"]]
   :ring {:handler pharchive-api.core.handler/app}
   :profiles

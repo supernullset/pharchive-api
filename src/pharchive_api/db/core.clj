@@ -56,5 +56,5 @@
 
 (defn get-collection [id]
   (first (select collections
-                 (where {:id id})
+                 (where {:uuid (java.util.UUID/fromString id)})
                  (limit 1))))
