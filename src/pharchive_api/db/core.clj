@@ -10,6 +10,18 @@
 (defentity users)
 (defentity collections)
 
+;; TODO: I need a presenter namespace
+(defn collections-presenter [collection-hash]
+  (let [keys
+        [:description
+         :frame
+         :film
+         :taken_at
+         :quantity_frames
+         :location
+         ]] (select-keys collection-hash keys))
+  )
+
 (defn create [table value]
   (insert table
           (values value)))
